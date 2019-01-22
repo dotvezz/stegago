@@ -8,6 +8,6 @@ type Processor interface {
 }
 
 type Engine interface {
-	Encode(image *image.Image, d *[]byte) (err error)
-	Decode(image *image.Image, d *[]byte) (err error)
+	Encode(i *image.Image, d *[]byte) (err error)
+	Decode(i *image.Image, d *[]byte) (err error)
 }
