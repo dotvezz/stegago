@@ -25,6 +25,10 @@ func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
 		for y := 0; y < h; y++ {
 			c := rgba.At(x, y).(color.RGBA)
 			z := w*x + y
+			b := bitAt(d, z)
+			if b > 1 {
+				goto Fin
+			}
 			var ch *uint8
 			switch z % 3 {
 			case 0:
@@ -38,11 +42,12 @@ func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
 				break
 			}
 			*ch >>= 1
-			*ch <<= bitAt(d, z)
+			*ch <<= b
 			rgba.Set(x, y, c)
 		}
 	}
 
+	Fin:
 	*i = rgba
 	return
 }
@@ -53,7 +58,11 @@ func (lsbContainer) Decode(d *[]byte, i *image.Image) (err error) {
 }
 
 func bitAt(d *[]byte, i int) uint8 {
-	b := (*d)[i/8]
+	x := i/8
+	if len(*d) <= x {
+		return 2
+	}
+	b := (*d)[x]
 	b >>= uint8(7 - i%8)
 	return 1 & b
 }
