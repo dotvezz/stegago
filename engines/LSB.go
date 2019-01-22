@@ -18,10 +18,22 @@ func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
 		return errors.New("unable to copy image to RGBA in LSB Engine")
 	}
 
+	d2 := *d
+
 	w := rgba.Bounds().Dx()
 	h := rgba.Bounds().Dy()
-	max := len(*d) * 8;
-	if len(*d)*8/3 > w*h {
+	max := len(d2) * 8
+
+	bits := make([]uint8, max)
+
+	for ind, bte := range d2 {
+		for a := 0; a < 8; a++ {
+			bits[ind*8+7-a] = bte & 1
+			bte >>= 1
+		}
+	}
+
+	if max/3 > w*h {
 		return errors.New("data is too large to be encoded in this image")
 	}
 
@@ -31,7 +43,7 @@ func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
 		x := z % w
 		c := rgba.At(x, y).(color.RGBA)
 
-		b := bitAt(d, z)
+		b := bits[z]
 		var ch *uint8
 		switch z % 3 {
 		case 0:
@@ -45,7 +57,7 @@ func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
 			break
 		}
 		*ch >>= 1
-		*ch <<= b
+		*ch += (*ch)&b
 		rgba.Set(x, y, c)
 		z++
 	}
