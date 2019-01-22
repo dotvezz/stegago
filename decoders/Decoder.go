@@ -5,7 +5,7 @@ import (
 	"stegago"
 )
 
-type Decoder func(i *image.Image, d *[]byte) (err error)
+type Decoder func(d *[]byte, i image.Image) (err error)
 
 func New(engine stegago.Engine) Decoder {
 	return func(i *image.Image, d *[]byte) (err error) {
