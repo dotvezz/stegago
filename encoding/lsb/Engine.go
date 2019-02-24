@@ -13,6 +13,7 @@ func (Engine) Encode(im *image.Image, in []byte) (err error) {
 	if im == nil {
 		return errors.New("image must not be nil")
 	}
+
 	rgba, ok := (*im).(*image.RGBA)
 	if !ok {
 		toRGBA(im)
@@ -24,41 +25,39 @@ func (Engine) Encode(im *image.Image, in []byte) (err error) {
 
 	w := rgba.Bounds().Dx()
 	h := rgba.Bounds().Dy()
-	max := len(in) * 8
-
-	bits := make([]uint8, max)
-
-	for ind, bte := range in {
-		for a := 0; a < 8; a++ {
-			bits[ind*8+7-a] = bte & 1
-			bte >>= 1
-		}
-	}
-
-	if max/3 > w*h {
+	if len(in)*8-8 > w*h {
 		return errors.New("data is too large to be encoded in this image")
 	}
 
-	for z := 0; z < max; z++ {
-		y := z / 3 / w
-		x := z / 3 % w
-		c := rgba.At(x, y).(color.RGBA)
+	z := 0
+	for _, bte := range in {
+		for a := 0; a < 8; a++ {
+			b := bte & 1
+			bte >>= 1
 
-		b := bits[z]
-		var ch *uint8
-		switch z % 3 {
-		case 0:
-			ch = &c.R
-		case 1:
-			ch = &c.G
-		case 2:
-			ch = &c.B
+			y := z / 3 / w
+			x := z / 3 % w
+			c := rgba.At(x, y).(color.RGBA)
+
+			var ch *uint8
+			switch z % 3 {
+			case 0:
+				ch = &c.R
+			case 1:
+				ch = &c.G
+			case 2:
+				ch = &c.B
+			}
+
+			*ch >>= 1
+			*ch <<= 1
+			*ch += (*ch) & b
+			rgba.Set(x, y, c)
+
+			z++
 		}
-		*ch >>= 1
-		*ch <<= 1
-		*ch += (*ch) & b
-		rgba.Set(x, y, c)
 	}
+
 
 	*im = rgba
 	return
