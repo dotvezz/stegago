@@ -1,4 +1,4 @@
-package endocing
+package encoding
 
 import (
 	"image"
