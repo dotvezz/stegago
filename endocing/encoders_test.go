@@ -1,4 +1,4 @@
-package coding
+package endocing
 
 import (
 	"stegago/engines"
