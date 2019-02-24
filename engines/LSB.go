@@ -40,8 +40,7 @@ func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
 		return errors.New("data is too large to be encoded in this image")
 	}
 
-	z := 0
-	for z < max {
+	for z := 0; z < max z++ {
 		y := z / w
 		x := z % w
 		c := rgba.At(x, y).(color.RGBA)
@@ -62,7 +61,6 @@ func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
 		*ch >>= 1
 		*ch += (*ch)&b
 		rgba.Set(x, y, c)
-		z++
 	}
 
 	*i = rgba
