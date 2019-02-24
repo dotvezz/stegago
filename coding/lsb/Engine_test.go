@@ -12,11 +12,10 @@ func BenchmarkLsbContainer_Encode(b *testing.B) {
 	if err != nil {
 		b.Error(err)
 	}
-	var message []byte
-	message = []byte("Hello, world!")
-	engine := lsbContainer{}
+
+	engine := Engine{}
 	for x := 0; x < b.N; x++ {
-		err = engine.Encode(i, &message)
+		err = engine.Encode(i, []byte("Hello, world!"))
 		if err != nil {
 			b.Error(err)
 		}
@@ -24,7 +23,7 @@ func BenchmarkLsbContainer_Encode(b *testing.B) {
 }
 
 func loadImage() (i *image.Image, err error) {
-	f, err := os.Open("../images/sailboat.jpg")
+	f, err := os.Open("../../testImages/sailboat.jpg")
 	if err != nil {
 		return
 	}

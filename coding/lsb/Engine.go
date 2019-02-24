@@ -7,29 +7,28 @@ import (
 	"image/draw"
 )
 
-var Engine = &lsbContainer{}
+type Engine struct{}
 
-type lsbContainer struct{}
-
-func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
-	rgba, ok := (*i).(*image.RGBA)
+func (Engine) Encode(im *image.Image, in []byte) (err error) {
+	if im == nil {
+		return errors.New("image must not be nil")
+	}
+	rgba, ok := (*im).(*image.RGBA)
 	if !ok {
-		toRGBA(i)
-		rgba, ok = (*i).(*image.RGBA)
+		toRGBA(im)
+		rgba, ok = (*im).(*image.RGBA)
 		if !ok {
 			return errors.New("unable to copy image to RGBA in Engine Engine")
 		}
 	}
 
-	d2 := *d
-
 	w := rgba.Bounds().Dx()
 	h := rgba.Bounds().Dy()
-	max := len(d2) * 8
+	max := len(in) * 8
 
 	bits := make([]uint8, max)
 
-	for ind, bte := range d2 {
+	for ind, bte := range in {
 		for a := 0; a < 8; a++ {
 			bits[ind*8+7-a] = bte & 1
 			bte >>= 1
@@ -63,11 +62,11 @@ func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
 		rgba.Set(x, y, c)
 	}
 
-	*i = rgba
+	*im = rgba
 	return
 }
 
-func (lsbContainer) Decode(d *[]byte, i *image.Image) (err error) {
+func (Engine) Decode(i *image.Image) (out []byte, err error) {
 	//TODO: Actually do something here
 	return
 }
