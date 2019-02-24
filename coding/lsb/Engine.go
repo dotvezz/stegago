@@ -59,7 +59,7 @@ func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
 			break
 		}
 		*ch >>= 1
-		*ch += (*ch)&b
+		*ch += (*ch) & b
 		rgba.Set(x, y, c)
 	}
 
@@ -73,7 +73,7 @@ func (lsbContainer) Decode(d *[]byte, i *image.Image) (err error) {
 }
 
 func bitAt(d *[]byte, i int) uint8 {
-	x := i/8
+	x := i / 8
 	if len(*d) <= x {
 		return 2
 	}
