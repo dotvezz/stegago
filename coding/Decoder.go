@@ -1,4 +1,4 @@
-package decoders
+package coding
 
 import (
 	"image"
@@ -7,7 +7,7 @@ import (
 
 type Decoder func(d *[]byte, i *image.Image) (err error)
 
-func New(engine stegago.Engine) Decoder {
+func NewDecoder(engine stegago.Engine) Decoder {
 	return func(d *[]byte, i *image.Image) (err error) {
 
 	}

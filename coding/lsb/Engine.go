@@ -1,4 +1,4 @@
-package engines
+package lsb
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 	"image/draw"
 )
 
-var LSB = &lsbContainer{}
+var Engine = &lsbContainer{}
 
 type lsbContainer struct{}
 
@@ -17,7 +17,7 @@ func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
 		toRGBA(i)
 		rgba, ok = (*i).(*image.RGBA)
 		if !ok {
-			return errors.New("unable to copy image to RGBA in LSB Engine")
+			return errors.New("unable to copy image to RGBA in Engine Engine")
 		}
 	}
 
