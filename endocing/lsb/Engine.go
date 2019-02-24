@@ -58,6 +58,7 @@ func (Engine) Encode(im *image.Image, in []byte) (err error) {
 			break
 		}
 		*ch >>= 1
+		*ch <<= 1
 		*ch += (*ch) & b
 		rgba.Set(x, y, c)
 	}
