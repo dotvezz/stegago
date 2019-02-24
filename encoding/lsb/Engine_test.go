@@ -2,6 +2,7 @@ package lsb
 
 import (
 	"image"
+	"image/jpeg"
 	_ "image/jpeg"
 	"os"
 	"testing"
@@ -20,6 +21,8 @@ func BenchmarkLsbContainer_Encode(b *testing.B) {
 			b.Error(err)
 		}
 	}
+
+	saveImage(*i)
 }
 
 func loadImage() (i *image.Image, err error) {
@@ -33,4 +36,9 @@ func loadImage() (i *image.Image, err error) {
 	}
 	i = &img
 	return
+}
+
+func saveImage(i image.Image) {
+	w, _ := os.Create("../../testImages/sailboat.out.jpg")
+	jpeg.Encode(w, i, nil)
 }

@@ -7,7 +7,7 @@ import (
 	"image/draw"
 )
 
-type Engine struct{}
+type Engine [0]bool
 
 func (Engine) Encode(im *image.Image, in []byte) (err error) {
 	if im == nil {
@@ -40,8 +40,8 @@ func (Engine) Encode(im *image.Image, in []byte) (err error) {
 	}
 
 	for z := 0; z < max; z++ {
-		y := z / w
-		x := z % w
+		y := z / 3 / w
+		x := z / 3 % w
 		c := rgba.At(x, y).(color.RGBA)
 
 		b := bits[z]
@@ -49,13 +49,10 @@ func (Engine) Encode(im *image.Image, in []byte) (err error) {
 		switch z % 3 {
 		case 0:
 			ch = &c.R
-			break
 		case 1:
 			ch = &c.G
-			break
 		case 2:
 			ch = &c.B
-			break
 		}
 		*ch >>= 1
 		*ch <<= 1
