@@ -21,36 +21,48 @@ func (lsbContainer) Encode(i *image.Image, d *[]byte) (err error) {
 		}
 	}
 
+	d2 := *d
+
 	w := rgba.Bounds().Dx()
 	h := rgba.Bounds().Dy()
+	max := len(d2) * 8
 
-	for x := 0; x < w; x++ {
-		for y := 0; y < h; y++ {
-			c := rgba.At(x, y).(color.RGBA)
-			z := w*x + y
-			b := bitAt(d, z)
-			if b > 1 {
-				goto Fin
-			}
-			var ch *uint8
-			switch z % 3 {
-			case 0:
-				ch = &c.R
-				break
-			case 1:
-				ch = &c.G
-				break
-			case 2:
-				ch = &c.B
-				break
-			}
-			*ch >>= 1
-			*ch <<= b
-			rgba.Set(x, y, c)
+	bits := make([]uint8, max)
+
+	for ind, bte := range d2 {
+		for a := 0; a < 8; a++ {
+			bits[ind*8+7-a] = bte & 1
+			bte >>= 1
 		}
 	}
 
-	Fin:
+	if max/3 > w*h {
+		return errors.New("data is too large to be encoded in this image")
+	}
+
+	for z := 0; z < max z++ {
+		y := z / w
+		x := z % w
+		c := rgba.At(x, y).(color.RGBA)
+
+		b := bits[z]
+		var ch *uint8
+		switch z % 3 {
+		case 0:
+			ch = &c.R
+			break
+		case 1:
+			ch = &c.G
+			break
+		case 2:
+			ch = &c.B
+			break
+		}
+		*ch >>= 1
+		*ch += (*ch)&b
+		rgba.Set(x, y, c)
+	}
+
 	*i = rgba
 	return
 }
