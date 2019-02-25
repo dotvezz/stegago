@@ -63,8 +63,29 @@ func (Engine) Encode(im *image.Image, in []byte) (err error) {
 	return
 }
 
-func (Engine) Decode(i *image.Image) (out []byte, err error) {
-	//TODO: Actually do something here
+func (Engine) Decode(im *image.Image) (out []byte, err error) {
+	if im == nil {
+		return nil, errors.New("image must not be nil")
+	}
+
+	rgba, ok := (*im).(*image.RGBA)
+	if !ok {
+		if !ok {
+			return nil, errors.New("can only decode RGBA images")
+		}
+	}
+
+	byt := byte(0)
+
+	for i, p := range rgba.Pix {
+		byt <<= 1
+		byt = byt | (p & 1)
+		if i % 8 == 0 {
+			out = append(out, byt)
+			byt = byte(0)
+		}
+	}
+
 	return
 }
 
