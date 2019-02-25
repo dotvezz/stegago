@@ -80,7 +80,10 @@ func (Engine) Decode(im *image.Image) (out []byte, err error) {
 	for i, p := range rgba.Pix {
 		byt <<= 1
 		byt = byt | (p & 1)
-		if i % 8 == 0 {
+		if i > 0 && i % 8 == 0 {
+			if byt == byte(0) {
+				break
+			}
 			out = append(out, byt)
 			byt = byte(0)
 		}
