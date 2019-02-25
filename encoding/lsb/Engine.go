@@ -25,7 +25,8 @@ func (Engine) Encode(im *image.Image, in []byte) (err error) {
 
 	w := rgba.Bounds().Dx()
 	h := rgba.Bounds().Dy()
-	if len(in)*8-8 > w*h {
+	in = append(in, byte(0))
+	if len(in)*8 > w*h {
 		return errors.New("data is too large to be encoded in this image")
 	}
 
@@ -57,7 +58,6 @@ func (Engine) Encode(im *image.Image, in []byte) (err error) {
 			z++
 		}
 	}
-
 
 	*im = rgba
 	return
