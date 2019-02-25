@@ -70,8 +70,10 @@ func (Engine) Decode(im *image.Image) (out []byte, err error) {
 
 	rgba, ok := (*im).(*image.RGBA)
 	if !ok {
+		toRGBA(im)
+		rgba, ok = (*im).(*image.RGBA)
 		if !ok {
-			return nil, errors.New("can only decode RGBA images")
+			return nil, errors.New("unable to copy image to RGBA in Engine Engine")
 		}
 	}
 
