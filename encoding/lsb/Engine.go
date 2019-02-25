@@ -52,7 +52,7 @@ func (Engine) Encode(im *image.Image, in []byte) (err error) {
 
 			*ch >>= 1
 			*ch <<= 1
-			*ch += (*ch) & b
+			*ch = (*ch) | b
 			rgba.Set(x, y, c)
 
 			z++
@@ -79,10 +79,15 @@ func (Engine) Decode(im *image.Image) (out []byte, err error) {
 
 	byt := byte(0)
 
+	bits := 0
 	for i, p := range rgba.Pix {
+		if (i+1)%4 == 0 {
+			continue
+		}
+		bits++
 		byt <<= 1
 		byt = byt | (p & 1)
-		if i > 0 && i % 8 == 0 {
+		if (bits+1)%8 == 0 {
 			if byt == byte(0) {
 				break
 			}
@@ -92,16 +97,6 @@ func (Engine) Decode(im *image.Image) (out []byte, err error) {
 	}
 
 	return
-}
-
-func bitAt(d *[]byte, i int) uint8 {
-	x := i / 8
-	if len(*d) <= x {
-		return 2
-	}
-	b := (*d)[x]
-	b >>= uint8(7 - i%8)
-	return 1 & b
 }
 
 func toRGBA(i *image.Image) {

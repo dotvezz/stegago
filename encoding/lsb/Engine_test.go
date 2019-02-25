@@ -65,5 +65,5 @@ func loadSavedImage() (i *image.Image, err error) {
 
 func saveImage(i image.Image) {
 	w, _ := os.Create("../../testImages/sailboat.out.jpg")
-	jpeg.Encode(w, i, nil)
+	jpeg.Encode(w, i, &jpeg.Options{Quality: 100})
 }
